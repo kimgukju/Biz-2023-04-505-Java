@@ -18,7 +18,7 @@ public class VarE {
 		System.out.println("뺄셈: " + minus1);
 		System.out.println("곱셈: " + times1);
 		System.out.println("나눗셈: " + devide1);
-		
+		System.out.println("");
 		System.out.printf("%d + %d = %d\n", num1, num2, plus1);
 		System.out.printf("%d - %d = %d\n", num1, num2, minus1);
 		System.out.printf("%d x %d = %d\n", num1, num2, times1);
