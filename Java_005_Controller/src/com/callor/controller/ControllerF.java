@@ -14,7 +14,8 @@ public class ControllerF {
 		int rndNum = (int) (Math.random() * 50) + 51;
 		for (index = 2; index < rndNum; index++) {
 			if (rndNum % index == 0) {
-				break;
+//				break;
+				return false;
 			}
 		}
 
