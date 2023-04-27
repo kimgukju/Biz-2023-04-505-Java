@@ -9,6 +9,7 @@ public class OnedayA {
 		for (int i = 0; i < student.length; i++) {
 			student[i] = (i+1)+ "번 학생";
 		}
+		
 
 		// 다. ScoreDto 클래스를 배열로 선언하여
 		// 각 학생의 학번과 점수 저장
@@ -22,7 +23,9 @@ public class OnedayA {
 			// 1번~10번 학생이라고 이름 넣음
 			scores[i].stName = student[i]; 
 			scores[i].stNum = String.format("%05d", 23000 + (i+1));
+			System.out.printf("%s\t %s\n",scores[i].stName , scores[i].stNum);
 		}
+		
 		
 		// 라. 각 과목의 성적은 51 ~ 100까지 random 정수 생성
 		// 아에서 만든 ScoreService 생성후 실행
@@ -63,6 +66,11 @@ public class OnedayA {
 		scService.printTotalScore(sumKor,sumEng,sumMath,sumMusic,sumArt,sumTotal);
 		scService.printTotalAvg(sumKor,sumEng,sumMath,sumMusic,sumArt,sumAvg);
 		System.out.println("=".repeat(100));
+		
+		
+	
 	}
 
 }
+
+
