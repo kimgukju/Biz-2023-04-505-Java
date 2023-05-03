@@ -12,7 +12,7 @@ public class ClassH {
 
 		// 인터넷에서 do~while 문이란걸 찾아서 해봤는데 해결 못했습니다
 		// 저는 num1에 정수값 입력하고 정수값이 아닐시 Game Over 나오며 즉시 중단 해보려했는데 
-		//문자열이나 실수값 넣을시 타입이 안맞다뜨며 오류가 뜹니다
+		// 문자열이나 실수값 넣을시 타입이 안맞다뜨며 오류가 뜹니다
 		do {
 			System.out.println("do~while문");
 			System.out.println("두 개의 정수를 입력하세요");
