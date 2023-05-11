@@ -13,7 +13,7 @@ import com.callor.classes.models.StudentDto;
 import com.callor.classes.service.StudentService;
 
 /*
- * StudentServiceImplV1 은 StudentService interface 를 imlements 하였고
+ * StudentServiceImplV1 은 StudentService interface 를 implements 하였고
  * StudentServiceImplV3 은 StudentServiceImplV1 을 extends 하였다
  */
 
