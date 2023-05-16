@@ -7,9 +7,11 @@ public class StudentExecF {
 	
 	public static void main(String[] args) {
 		StudentService stdService = new StudentServiceImplV2();
+		
 		stdService.insertStudent();
 		stdService.loadStudent();
-		//stdService.printStudent();
+		stdService.printStudent();
+		
 	
 	}
 
