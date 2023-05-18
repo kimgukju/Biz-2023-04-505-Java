@@ -101,14 +101,24 @@ public class BuyerServiceImplV1A implements BuyerService{
 			
 			buyerList.add(bDto);
 		}
-		System.out.println("Load 한 데이터 개수 : " + buyerList.size());
+		//System.out.println("Load 한 데이터 개수 : " + buyerList.size());
 	}
 
 	
-
+	// 고객 ID 를 전달받아 고객정보(Dto)를 return
 	@Override
 	public BuyerDto getBuyer(String buId) {
 		// TODO Auto-generated method stub
+		if(buyerList.isEmpty()) {
+			loadBuyer();
+		}
+		
+		for(BuyerDto dto : buyerList) {
+			if(dto.buId.equals(buId)) {
+				return dto;
+			}
+		}
+		
 		return null;
 	}
 	
