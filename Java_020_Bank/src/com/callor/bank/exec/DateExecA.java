@@ -24,7 +24,7 @@ public class DateExecA {
 		Date date = new Date(System.currentTimeMillis());
 		System.out.println(date.toString());
 		
-		SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-mm-dd");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd");
 		SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 		
 		// 날짜 type의 데이터를 String.format type의 문자열로 변환하기
@@ -39,7 +39,7 @@ public class DateExecA {
 		LocalTime localTime = LocalTime.now();
 		LocalDateTime localDateTime = LocalDateTime.now();
 		
-		DateTimeFormatter dateFormat1 = DateTimeFormatter.ofPattern("YYYY-mm-dd");
+		DateTimeFormatter dateFormat1 = DateTimeFormatter.ofPattern("YYYY-MM-dd");
 		DateTimeFormatter timeFormat1 = DateTimeFormatter.ofPattern("HH:mm:ss");
 
 		System.out.println( localDate.format(dateFormat1) );
