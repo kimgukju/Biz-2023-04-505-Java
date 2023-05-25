@@ -2,6 +2,7 @@ package com.callor.bank.service;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
@@ -10,6 +11,8 @@ import java.util.Scanner;
 import com.callor.bank.config.DBContract;
 import com.callor.bank.exec.BuyerDto;
 import com.callor.bank.models.AccDto;
+import com.callor.bank.models.AccListDto;
+import com.callor.bank.service.impl.AccListServiceImplV1;
 import com.callor.bank.service.impl.AccServiceV1;
 import com.callor.bank.service.impl.BuyerServiceImplV1;
 import com.callor.bank.service.utils.Line;
@@ -21,10 +24,12 @@ public class BankService {
 	protected List<BuyerDto> buyerList;
 	protected final BuyerService buyerService;
 	protected final AccService accService;
+	protected final AccListService accListService;
 	
 	public BankService() {
 		buyerService = new BuyerServiceImplV1();
 		accService = new AccServiceV1();
+		accListService = new AccListServiceImplV1();
 		scan = new Scanner(System.in);
 	}
 	
@@ -262,41 +267,186 @@ public class BankService {
 				accService.insert(accDto);
 		}
 		
+	}
+	
+	public void insertAccList() {
+		// 고객정보 확인
+		printBuyerList();
+		findUserInfo();
+		
+		while(true) {
+			System.out.println(Line.sLine(100));
+			System.out.println("입출금 등록");
+			System.out.println(Line.sLine(100));
+			System.out.print("계좌번호 >> ");
+			String acNum = scan.nextLine();
+			
+			// 계좌번호를 사용하여 tbl_acc 테이블에서 데이터 조회
+			// accDto 에는 acNum 계좌번호에 해당하는 데이터가 모두 담긴 상태
+			AccDto accDto = accService.findById(acNum);
+			
+			if(accDto == null) {   										//@계좌번호를 잘못입력했다면
+				System.out.printf("계좌번호를 확인하세요(%s)",acNum);
+				continue;
+			}
+			
+			System.out.print("거래구분(1: 입금, 2: 출금, -1: 종료) >> ");
+			String aioDiv = scan.nextLine();
+			int intDiv = 0;
+			try {
+				intDiv = Integer.valueOf(aioDiv);
+				
+			} catch (Exception e) {
+				System.out.printf("선택이 잘못되었습니다", aioDiv);
+				continue;
+			}
+			if(intDiv == -1) {
+				System.out.println("입출금 업무 중단");
+				break;
+			}
+			if(intDiv != 1 && intDiv != 2) {
+				System.out.println("1: 입금, 2: 출금 중에서 선택하세요");
+				continue;
+			}
+			
+			
+			String[] divs = {"입금","출금"};
+			int intAmt = 0;
+			while(true) {
+				String prompt = divs[intDiv - 1];
+				System.out.printf("%s (QUIT:종료) >> ", prompt);
+				String amount = scan.nextLine();
+				if(amount.equals("QUIT")) {
+					intAmt = -1;
+					break;
+				}
+				try {
+					intAmt = Integer.valueOf(amount);
+				} catch (Exception e) {
+					System.out.printf("%s 금액은 정수(숫자)로 입력해주세요\n",prompt);
+					continue;
+				}
+				
+				if(aioDiv.equals("2")) {
+					int balance = accDto.acBalance;
+					if(balance < intAmt) {
+						System.out.printf("잔액(%s)이 부족하여 출금할수 없음\n",balance);
+						continue;
+					}
+				}
+				break;
+			} // 입출금입력 while end
+			
+			if(intAmt < 0) break;
+			
+			AccListDto ioDto = new AccListDto();
+			
+			Date date = new Date(System.currentTimeMillis());
+			SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd");
+			SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+			
+			ioDto.aioDate = dateFormat.format(date);
+			ioDto.aioTime = timeFormat.format(date);
+			
+			ioDto.aioDiv = aioDiv;
+			ioDto.acNum = acNum;
+			
+			
+			if(aioDiv.equals("1")) {
+				ioDto.aioInput = intAmt;
+			} else if( aioDiv.equals("2")) {
+				ioDto.aioOutput = intAmt;
+				intAmt *= -1;
+			}
+			
+			accListService.insert(ioDto);
+			
+			accDto.acBalance = accDto.acBalance + intAmt;
+			accService.update(accDto);
+			
+		}
 		
 		
 		
-//실패작(내가한거)
 		
-//		LocalDate localDate = LocalDate.now();                                      // 현재날짜 
-//		DateTimeFormatter dateFormat1 = DateTimeFormatter.ofPattern("YYYYMMdd");	// 요까지 코드
+		
+		
+		
+		
+		
+		
+		
+		// 실패
+//		LocalDate localDate = LocalDate.now();
+//		LocalTime localTime = LocalTime.now();
+//		DateTimeFormatter dateFormat1 = DateTimeFormatter.ofPattern("YYYY-MM-dd");
+//		DateTimeFormatter timeFormat1 = DateTimeFormatter.ofPattern("HH:mm:ss");
+//		// 날짜 + 시각 
 //		
-//		System.out.println("고객ID를 조회합니다");
-//		System.out.print("고객ID를 입력해주세요 >> ");
-//		String strBuId = scan.nextLine();
-//		
-//		BuyerDto buyerDto = buyerService.findById(strBuId);
-//		List<AccDto> accList = accService.findByBuId(strBuId); 								<< 필요X
-//		if(buyerDto == null) {
-//			System.out.println("ID가 존재하지 않습니다");
-//			return ;
-//		} else {
-//			System.out.println("고객번호가 존재합니다");
-//			System.out.print("생성할 계좌 번호를 입력해주세요 >> ");
-//			String newNum = scan.nextLine();
-//			
-//			System.out.println("생성할 계좌 구분방법을 선택하세요");
-//			System.out.println("1.입출금 계좌 2.적금계좌 3.대출계좌 (숫자1~3 입력)");
-//			System.out.print("입력 >> ");
-//			String newDiv = scan.nextLine();
-//			
-//			
-//			for(AccDto accDto : accList) {													 << List 할필요없는데 만듬 
-//				accDto.acNum = localDate.format(dateFormat1)+newNum;
-//				accDto.acDiv = newDiv;
-//				accService.insert(accDto);
-//				System.out.println(accDto.acNum);
-//			}
+//		printBuyerList();
+//		System.out.print("고객 ID를 입력하세요 >> ");
+//		String accBuId = scan.nextLine();
+//		List<AccDto> accList = accService.findByBuId(accBuId);
+//		System.out.println("보유한 계좌 List");
+//		System.out.println(Line.dLine(100));
+//		for(AccDto accDto : accList) {
+//			System.out.printf("보유한 계좌 %s\t", accDto.acNum);
+//			System.out.printf("계좌 타입 : %s\t", accDto.acDiv);
+//			System.out.printf("잔액 %s\n", accDto.acBalance);
 //		}
+//		System.out.println(Line.dLine(100));
+//		
+//		AccListDto acclistDto = new AccListDto();
+//		AccDto accDto = new AccDto();
+//		
+//		System.out.print("계좌번호를 입력하세요 >>");
+//		String accNum = scan.nextLine();
+//		
+//		System.out.print("계좌타입을 입력 >>");
+//		String accDiv = scan.nextLine();
+//		
+//		System.out.println("1.입금 2.출금");
+//		String accInOut = scan.nextLine();
+//		
+//		String accInput = "";
+//		String accOutput = "";
+//		if(accInOut.equals("1")) {
+//			System.out.print("입금액을 입력하세요 : ");
+//			accInput = scan.nextLine();
+//			acclistDto.acNum = accNum;
+//			acclistDto.aioInput = Integer.valueOf(accInput);
+//			accDto.acBalance += Integer.valueOf(accInput);
+//			
+//		} else if(accInOut.equals("2")) {
+//			System.out.print("출금액을 입력하세요 : ");
+//			accOutput = scan.nextLine();
+//			acclistDto.acNum = accNum;
+//			acclistDto.aioOutput = Integer.valueOf(accOutput);
+//			accDto.acBalance -= Integer.valueOf(accOutput);
+//			
+//		}
+//		
+//		acclistDto.aioDiv = accInOut;
+//		acclistDto.aioDate = localDate.format(dateFormat1);
+//		acclistDto.aioTime = localTime.format(timeFormat1);
+//		
+//		accDto.acNum = accNum;
+//		accDto.acDiv = accDiv;
+//		accDto.acBuId = accBuId;
+//		accService.insertMoney(accDto);
+//		acclistService.insert(acclistDto);
+//		System.out.printf("날짜 : %s , 시간 : %s\n", localDate.format(dateFormat1), localTime.format(timeFormat1));
+//		System.out.printf("입금액 : %s , 출금액 : %s \n", accInput , accOutput);
+//		System.out.printf("잔액 : %d\n", accDto.acBalance);
+//		
+////		for(AccDto accDto : accList) {
+////			System.out.printf("해당 계좌 %s\n", accDto.acNum);
+////			System.out.printf("잔액 : %d\n", accDto.acBalance);
+////			
+////		}
+			
+		
+		
 	}
 
 }

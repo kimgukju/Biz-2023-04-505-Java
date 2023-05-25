@@ -37,6 +37,7 @@ public class DateExecA {
 		// java 1.8 부터 사용하는 날짜 type 의 객체
 		LocalDate localDate = LocalDate.now();
 		LocalTime localTime = LocalTime.now();
+		
 		LocalDateTime localDateTime = LocalDateTime.now();
 		
 		DateTimeFormatter dateFormat1 = DateTimeFormatter.ofPattern("YYYY-MM-dd");
